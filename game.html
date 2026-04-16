@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Jake's Swipe Right Survival 🎮</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;600;700;800&family=Lobster&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #e8437a;
+    --hot: #ff2d6b;
+    --purple: #7c3aed;
+    --gold: #f59e0b;
+    --dark: #0f0a1e;
+    --green: #22c55e;
+    --red: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; background: var(--dark); font-family: 'DM Sans', sans-serif; touch-action: none; user-select: none; }
+
+  /* ── SCREENS ── */
+  .screen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 1.5rem; text-align: center; transition: opacity 0.3s; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+
+  /* ── START SCREEN ── */
+  #startScreen { background: linear-gradient(160deg, #0f0a1e, #1a0a2e, #2d1057); }
+  .logo-back { font-family: 'Lobster', cursive; font-size: 1.1rem; background: linear-gradient(135deg, var(--pink), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 2rem; text-decoration: none; display: block; }
+  .game-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 8vw, 3rem); font-weight: 900; color: white; line-height: 1.05; margin-bottom: 0.5rem; }
+  .game-title span { background: linear-gradient(135deg, var(--pink), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-style: italic; }
+  .jake-face { font-size: 5rem; margin: 1rem 0; animation: bounce 1.5s ease-in-out infinite; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  .rules-box { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 1.3rem 1.5rem; margin: 1.2rem 0; max-width: 340px; }
+  .rule { display: flex; align-items: center; gap: 0.8rem; padding: 0.45rem 0; color: white; font-size: 0.95rem; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .rule:last-child { border-bottom: none; }
+  .rule-icon { font-size: 1.4rem; flex-shrink: 0; width: 32px; }
+  .rule-dir { font-size: 0.72rem; font-weight: 800; letter-spacing: 1px; padding: 0.2rem 0.6rem; border-radius: 50px; }
+  .right-tag { background: rgba(34,197,94,0.2); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+  .left-tag { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+  .start-btn { background: linear-gradient(135deg, var(--pink), var(--hot)); color: white; border: none; padding: 1rem 3rem; border-radius: 50px; font-size: 1.2rem; font-weight: 800; cursor: pointer; box-shadow: 0 8px 30px rgba(232,67,122,0.45); margin-top: 0.8rem; letter-spacing: 0.3px; width: 100%; max-width: 300px; }
+  .strikes-note { color: rgba(255,255,255,0.4); font-size: 0.8rem; margin-top: 0.8rem; }
+
+  /* ── GAME SCREEN ── */
+  #gameScreen { background: linear-gradient(160deg, #0f0a1e, #1a0a2e); justify-content: flex-start; padding: 0; }
+
+  /* HUD */
+  .hud { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem 0.5rem; flex-shrink: 0; }
+  .hud-score { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 900; color: white; }
+  .hud-score span { font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.45); display: block; line-height: 1; }
+  .hud-level { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 50px; padding: 0.3rem 0.9rem; color: white; font-size: 0.82rem; font-weight: 700; }
+  .hud-hearts { font-size: 1.5rem; letter-spacing: 2px; }
+
+  /* TIMER BAR */
+  .timer-wrap { width: 100%; padding: 0 1.5rem; flex-shrink: 0; }
+  .timer-track { height: 8px; background: rgba(255,255,255,0.1); border-radius: 50px; overflow: hidden; }
+  .timer-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--gold)); border-radius: 50px; transition: width 0.1s linear, background 0.3s; }
+  .timer-fill.warn { background: linear-gradient(90deg, var(--gold), var(--red)); }
+  .timer-fill.danger { background: var(--red); }
+
+  /* CARD AREA */
+  .card-area { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; width: 100%; overflow: hidden; }
+
+  /* SWIPE CARD */
+  .swipe-card {
+    width: min(280px, 78vw);
+    background: white;
+    border-radius: 28px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 2rem 1.5rem;
+    position: absolute;
+    cursor: grab;
+    transition: box-shadow 0.2s;
+    will-change: transform;
+  }
+  .swipe-card:active { cursor: grabbing; }
+  .card-emoji { font-size: clamp(4rem, 15vw, 6rem); margin-bottom: 0.8rem; line-height: 1; }
+  .card-label { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 900; color: #1a0a2e; text-align: center; margin-bottom: 0.3rem; }
+  .card-sublabel { font-size: 0.82rem; color: #9b6fa0; font-style: italic; }
+
+  /* SWIPE INDICATORS */
+  .indicator { position: absolute; top: 50%; transform: translateY(-50%); font-size: 1rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 0.6rem 1.2rem; border-radius: 12px; opacity: 0; pointer-events: none; border: 3px solid; }
+  .indicator-right { right: 1.2rem; color: var(--green); border-color: var(--green); background: rgba(34,197,94,0.15); }
+  .indicator-left  { left: 1.2rem; color: var(--red); border-color: var(--red); background: rgba(239,68,68,0.15); }
+
+  /* SWIPE HINT ARROWS */
+  .swipe-hints { width: 100%; display: flex; justify-content: space-between; padding: 0 1.5rem 0.5rem; flex-shrink: 0; }
+  .hint { display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; font-weight: 700; opacity: 0.35; color: white; }
+  .hint.hint-right { color: #4ade80; opacity: 0.6; }
+  .hint.hint-left  { color: #f87171; opacity: 0.6; }
+
+  /* JAKE STATUS */
+  .jake-status { padding: 0 1.5rem 1.2rem; text-align: center; flex-shrink: 0; }
+  .jake-says { color: rgba(255,255,255,0.5); font-size: 0.8rem; font-style: italic; min-height: 1.2rem; }
+
+  /* ── RESULT FLASH ── */
+  .flash { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 50; pointer-events: none; opacity: 0; transition: opacity 0.15s; }
+  .flash.show { opacity: 1; }
+  .flash-inner { font-size: 4rem; animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+  @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+  /* ── GAMEOVER SCREEN ── */
+  #gameoverScreen { background: linear-gradient(160deg, #0f0a1e, #1a0a2e, #2d1057); }
+  .go-emoji { font-size: 4rem; margin-bottom: 0.5rem; }
+  .go-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 8vw, 2.8rem); font-weight: 900; color: white; margin-bottom: 0.4rem; }
+  .go-sub { color: rgba(255,255,255,0.55); font-size: 0.95rem; margin-bottom: 1.5rem; }
+  .go-score-box { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 1.3rem 2rem; margin-bottom: 1.5rem; }
+  .go-score-num { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 900; color: var(--gold); line-height: 1; }
+  .go-score-label { color: rgba(255,255,255,0.45); font-size: 0.82rem; margin-top: 0.2rem; }
+  .go-best { color: rgba(255,255,255,0.35); font-size: 0.82rem; margin-top: 0.5rem; }
+  .go-jake-quote { background: rgba(232,67,122,0.1); border-left: 3px solid var(--pink); border-radius: 0 12px 12px 0; padding: 0.9rem 1.2rem; margin-bottom: 1.5rem; font-style: italic; color: rgba(255,255,255,0.7); font-size: 0.9rem; max-width: 320px; text-align: left; }
+  .btn-group { display: flex; flex-direction: column; gap: 0.8rem; width: 100%; max-width: 300px; }
+  .btn-retry { background: linear-gradient(135deg, var(--pink), var(--hot)); color: white; border: none; padding: 1rem; border-radius: 50px; font-size: 1.1rem; font-weight: 800; cursor: pointer; box-shadow: 0 8px 30px rgba(232,67,122,0.4); }
+  .btn-home { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.9rem; border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer; text-decoration: none; display: block; }
+
+  /* ── LEVEL UP FLASH ── */
+  .level-flash { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 60; pointer-events: none; opacity: 0; }
+  .level-flash.show { animation: levelPop 1.2s forwards; }
+  @keyframes levelPop { 0% { opacity: 0; } 15% { opacity: 1; } 75% { opacity: 1; } 100% { opacity: 0; } }
+  .level-flash-inner { background: linear-gradient(135deg, var(--purple), #5b21b6); color: white; font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900; padding: 1rem 2.5rem; border-radius: 50px; box-shadow: 0 10px 40px rgba(124,58,237,0.5); }
+</style>
+</head>
+<body>
+
+<!-- ── START SCREEN ── -->
+<div class="screen" id="startScreen">
+  <a href="index.html" class="logo-back">← BigLoveFinder™</a>
+  <div class="jake-face">🧔</div>
+  <div class="game-title">Jake's Swipe Right<br><span>Survival</span></div>
+  <div class="rules-box">
+    <div class="rule">
+      <span class="rule-icon">🍔</span>
+      <span style="flex:1; text-align:left;">Burgers &amp; Fries</span>
+      <span class="rule-dir right-tag">SWIPE RIGHT 👉</span>
+    </div>
+    <div class="rule">
+      <span class="rule-icon">🍟</span>
+      <span style="flex:1; text-align:left;">All Fried Goods</span>
+      <span class="rule-dir right-tag">SWIPE RIGHT 👉</span>
+    </div>
+    <div class="rule">
+      <span class="rule-icon">🥦</span>
+      <span style="flex:1; text-align:left;">Vegetables</span>
+      <span class="rule-dir left-tag">SWIPE LEFT 👈</span>
+    </div>
+    <div class="rule">
+      <span class="rule-icon">🏋️</span>
+      <span style="flex:1; text-align:left;">Gym Equipment</span>
+      <span class="rule-dir left-tag">SWIPE LEFT 👈</span>
+    </div>
+    <div class="rule">
+      <span class="rule-icon">⏱️</span>
+      <span style="flex:1; text-align:left; color: rgba(255,255,255,0.65);">Too slow = strike</span>
+    </div>
+  </div>
+  <button class="start-btn" id="startBtn">Let's Eat 🍔</button>
+  <div class="strikes-note">2 strikes and you're out · Levels get faster</div>
+</div>
+
+<!-- ── GAME SCREEN ── -->
+<div class="screen hidden" id="gameScreen">
+  <!-- HUD -->
+  <div class="hud">
+    <div class="hud-score"><span>SCORE</span><span id="scoreDisplay">0</span></div>
+    <div class="hud-level" id="levelDisplay">Level 1</div>
+    <div class="hud-hearts" id="heartsDisplay">❤️❤️</div>
+  </div>
+
+  <!-- TIMER -->
+  <div class="timer-wrap">
+    <div class="timer-track"><div class="timer-fill" id="timerFill"></div></div>
+  </div>
+
+  <!-- CARD AREA -->
+  <div class="card-area" id="cardArea">
+    <div class="indicator indicator-right" id="indicatorRight">👍 JAKE!</div>
+    <div class="indicator indicator-left" id="indicatorLeft">❌ NOPE</div>
+    <div class="swipe-card" id="swipeCard">
+      <div class="card-emoji" id="cardEmoji">🍔</div>
+      <div class="card-label" id="cardLabel">Whopper</div>
+      <div class="card-sublabel" id="cardSublabel">Jake's soulmate</div>
+    </div>
+  </div>
+
+  <!-- HINTS -->
+  <div class="swipe-hints">
+    <div class="hint hint-left">👈 Reject</div>
+    <div class="hint hint-right">Accept 👉</div>
+  </div>
+
+  <!-- JAKE STATUS -->
+  <div class="jake-status">
+    <div class="jake-says" id="jakeSays">"Okay let's do this."</div>
+  </div>
+</div>
+
+<!-- ── GAME OVER SCREEN ── -->
+<div class="screen hidden" id="gameoverScreen">
+  <div class="go-emoji" id="goEmoji">💔</div>
+  <div class="go-title" id="goTitle">Jake Is Disappointed</div>
+  <div class="go-sub" id="goSub">He may have to consider the gym now. This is your fault.</div>
+  <div class="go-score-box">
+    <div class="go-score-num" id="finalScore">0</div>
+    <div class="go-score-label">Items Judged Correctly</div>
+    <div class="go-best" id="bestScore"></div>
+  </div>
+  <div class="go-jake-quote" id="goQuote">"I trusted you with my lifestyle. I'm not angry. I'm just... hungry."</div>
+  <div class="btn-group">
+    <button class="btn-retry" id="retryBtn">Try Again 🍔</button>
+    <a href="index.html" class="btn-home">Back to BigLoveFinder™</a>
+  </div>
+</div>
+
+<!-- RESULT FLASH -->
+<div class="flash" id="flash"><div class="flash-inner" id="flashInner"></div></div>
+
+<!-- LEVEL UP FLASH -->
+<div class="level-flash" id="levelFlash">
+  <div class="level-flash-inner" id="levelFlashText">⚡ Level 2 — Faster!</div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────
+const GOOD = [
+  { emoji: '🍔', label: 'Whopper',        sub: "Jake's soulmate" },
+  { emoji: '🍟', label: 'Large Fries',    sub: 'Mandatory side dish' },
+  { emoji: '🍕', label: 'Pizza',          sub: 'Jake approves' },
+  { emoji: '🌭', label: 'Hot Dog',        sub: 'Classic Jake fuel' },
+  { emoji: '🥓', label: 'Bacon',          sub: 'A lifestyle choice' },
+  { emoji: '🍗', label: 'Fried Chicken',  sub: 'Jake-certified' },
+  { emoji: '🥞', label: 'Pancakes',       sub: 'Breakfast of kings' },
+  { emoji: '🍩', label: 'Donut',          sub: 'Dessert AND breakfast' },
+  { emoji: '🧀', label: 'Extra Cheese',   sub: 'On everything' },
+  { emoji: '🌮', label: 'Tacos',          sub: 'Tuesday every day' },
+  { emoji: '🍦', label: 'Soft Serve',     sub: 'Post-BK tradition' },
+  { emoji: '🥪', label: 'Loaded Sub',     sub: 'Six inches minimum' },
+  { emoji: '🍱', label: 'Combo Meal',     sub: 'The full experience' },
+  { emoji: '🥐', label: 'Croissant',      sub: 'Classy Jake energy' },
+  { emoji: '🧆', label: 'Onion Rings',    sub: 'BK essential' },
+];
+
+const BAD = [
+  { emoji: '🥦', label: 'Broccoli',       sub: 'Absolutely not' },
+  { emoji: '🥗', label: 'Side Salad',     sub: 'A personal attack' },
+  { emoji: '🏋️', label: 'Dumbbells',      sub: 'Jake is allergic' },
+  { emoji: '🚴', label: 'Spin Bike',      sub: 'Hard no' },
+  { emoji: '🥕', label: 'Carrots',        sub: "This isn't a farm" },
+  { emoji: '🥑', label: 'Avocado',        sub: 'No thanks, hipster' },
+  { emoji: '🏃', label: 'Running Shoes',  sub: "Jake doesn't run" },
+  { emoji: '🥤', label: 'Protein Shake',  sub: 'Smells like regret' },
+  { emoji: '🥬', label: 'Kale',           sub: 'Criminal vegetable' },
+  { emoji: '🍎', label: 'Apple',          sub: 'Not a snack' },
+  { emoji: '🧘', label: 'Yoga',           sub: 'Jake walked out' },
+  { emoji: '📏', label: 'Measuring Tape', sub: 'Jake hides these' },
+  { emoji: '🥦', label: 'Broccoli Again', sub: 'Still a no' },
+  { emoji: '🫑', label: 'Bell Pepper',    sub: 'Do not want' },
+  { emoji: '🚶', label: 'Step Counter',   sub: 'Turned it off' },
+];
+
+const JAKE_GOOD = [
+  '"Now THAT is what I\'m talking about."',
+  '"Beautiful. Absolutely beautiful."',
+  '"This is why I wake up in the morning."',
+  '"Bill would approve of this choice."',
+  '"Right call. I raised you well."',
+  '"My kind of decision-making."',
+  '"Chef\'s kiss. Legendary."',
+  '"I\'m actually getting emotional."',
+];
+
+const JAKE_BAD = [
+  '"I didn\'t come here to be attacked."',
+  '"That goes in the bin."',
+  '"Absolutely not. Next."',
+  '"I\'m calling Bill about this."',
+  '"This is NOT the lifestyle."',
+  '"DELETE. DELETE. DELETE."',
+  '"My mullet is offended."',
+  '"This is why trust is hard."',
+];
+
+const JAKE_SLOW = [
+  '"...did you fall asleep up there?"',
+  '"I aged three years waiting."',
+  '"At this pace we\'ll never eat."',
+  '"Jake waits for no one. Except BK drive-thru."',
+];
+
+const GO_QUOTES = [
+  '"I trusted you with my lifestyle. I\'m not angry. I\'m just... hungry."',
+  '"Two strikes. I\'ve seen worse. I\'ve BEEN worse. But still."',
+  '"Bill is going to hear about this."',
+  '"At least the Whopper never lets me down."',
+  '"Next time, lead with the fries. Always start with the fries."',
+];
+
+// ─── STATE ───────────────────────────────────────────────
+let score = 0;
+let strikes = 0;
+let level = 1;
+let timerInterval = null;
+let timerPct = 100;
+let currentCard = null;
+let isDragging = false;
+let startX = 0;
+let currentX = 0;
+let answered = false;
+let bestScore = parseInt(localStorage.getItem('jakesBest') || '0');
+
+// Level config: [timeLimit ms, itemsToNextLevel]
+const LEVELS = [
+  null,
+  { time: 4000, next: 6  },
+  { time: 3200, next: 8  },
+  { time: 2500, next: 10 },
+  { time: 2000, next: 12 },
+  { time: 1600, next: 15 },
+  { time: 1300, next: 999 },
+];
+let levelItemCount = 0;
+
+// ─── ELEMENTS ────────────────────────────────────────────
+const startScreen   = document.getElementById('startScreen');
+const gameScreen    = document.getElementById('gameScreen');
+const gameoverScreen= document.getElementById('gameoverScreen');
+const startBtn      = document.getElementById('startBtn');
+const retryBtn      = document.getElementById('retryBtn');
+const scoreDisplay  = document.getElementById('scoreDisplay');
+const levelDisplay  = document.getElementById('levelDisplay');
+const heartsDisplay = document.getElementById('heartsDisplay');
+const timerFill     = document.getElementById('timerFill');
+const swipeCard     = document.getElementById('swipeCard');
+const cardEmoji     = document.getElementById('cardEmoji');
+const cardLabel     = document.getElementById('cardLabel');
+const cardSublabel  = document.getElementById('cardSublabel');
+const indicatorR    = document.getElementById('indicatorRight');
+const indicatorL    = document.getElementById('indicatorLeft');
+const jakeSays      = document.getElementById('jakeSays');
+const flash         = document.getElementById('flash');
+const flashInner    = document.getElementById('flashInner');
+const levelFlash    = document.getElementById('levelFlash');
+const levelFlashTxt = document.getElementById('levelFlashText');
+const finalScore    = document.getElementById('finalScore');
+const bestScoreEl   = document.getElementById('bestScore');
+const goEmoji       = document.getElementById('goEmoji');
+const goTitle       = document.getElementById('goTitle');
+const goSub         = document.getElementById('goSub');
+const goQuote       = document.getElementById('goQuote');
+
+// ─── SHOW/HIDE SCREENS ────────────────────────────────────
+function show(el) { el.classList.remove('hidden'); }
+function hide(el) { el.classList.add('hidden'); }
+
+// ─── START GAME ───────────────────────────────────────────
+function startGame() {
+  score = 0; strikes = 0; level = 1; levelItemCount = 0;
+  scoreDisplay.textContent = '0';
+  levelDisplay.textContent = 'Level 1';
+  updateHearts();
+  hide(startScreen);
+  hide(gameoverScreen);
+  show(gameScreen);
+  nextCard();
+}
+
+// ─── CARD ─────────────────────────────────────────────────
+function nextCard() {
+  answered = false;
+  resetCard();
+
+  // Pick random good or bad
+  const isGood = Math.random() > 0.45;
+  const pool = isGood ? GOOD : BAD;
+  currentCard = { ...pool[Math.floor(Math.random() * pool.length)], isGood };
+
+  cardEmoji.textContent  = currentCard.emoji;
+  cardLabel.textContent  = currentCard.label;
+  cardSublabel.textContent = currentCard.sub;
+
+  startTimer();
+}
+
+function resetCard() {
+  clearTimer();
+  swipeCard.style.transition = 'none';
+  swipeCard.style.transform  = 'translateX(0) rotate(0deg)';
+  swipeCard.style.opacity    = '1';
+  indicatorR.style.opacity = '0';
+  indicatorL.style.opacity = '0';
+  timerFill.style.width = '100%';
+  timerFill.className = 'timer-fill';
+}
+
+// ─── TIMER ────────────────────────────────────────────────
+function startTimer() {
+  timerPct = 100;
+  const cfg = LEVELS[Math.min(level, LEVELS.length - 1)];
+  const duration = cfg.time;
+  const interval = 50;
+  const steps = duration / interval;
+  let step = 0;
+
+  timerInterval = setInterval(() => {
+    step++;
+    timerPct = 100 - (step / steps) * 100;
+    timerFill.style.width = timerPct + '%';
+
+    if (timerPct < 30) timerFill.classList.add('warn');
+    if (timerPct < 15) { timerFill.classList.remove('warn'); timerFill.classList.add('danger'); }
+
+    if (timerPct <= 0) {
+      clearTimer();
+      if (!answered) timeOut();
+    }
+  }, interval);
+}
+
+function clearTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+
+function timeOut() {
+  answered = true;
+  jakeSays.textContent = JAKE_SLOW[Math.floor(Math.random() * JAKE_SLOW.length)];
+  doStrike();
+}
+
+// ─── ANSWER ───────────────────────────────────────────────
+function answer(wentRight) {
+  if (answered) return;
+  answered = true;
+  clearTimer();
+
+  const correct = (wentRight && currentCard.isGood) || (!wentRight && !currentCard.isGood);
+
+  if (correct) {
+    score++;
+    levelItemCount++;
+    scoreDisplay.textContent = score;
+    jakeSays.textContent = JAKE_GOOD[Math.floor(Math.random() * JAKE_GOOD.length)];
+    showFlash('✅');
+
+    // Level up?
+    const cfg = LEVELS[Math.min(level, LEVELS.length - 1)];
+    if (levelItemCount >= cfg.next && level < LEVELS.length - 1) {
+      level++;
+      levelItemCount = 0;
+      levelDisplay.textContent = 'Level ' + level;
+      showLevelFlash();
+    }
+
+    setTimeout(nextCard, 600);
+  } else {
+    jakeSays.textContent = JAKE_BAD[Math.floor(Math.random() * JAKE_BAD.length)];
+    showFlash('❌');
+    doStrike();
+  }
+}
+
+function doStrike() {
+  strikes++;
+  updateHearts();
+  if (strikes >= 2) {
+    setTimeout(gameOver, 700);
+  } else {
+    setTimeout(nextCard, 800);
+  }
+}
+
+function updateHearts() {
+  heartsDisplay.textContent = strikes === 0 ? '❤️❤️' : strikes === 1 ? '🖤❤️' : '🖤🖤';
+}
+
+// ─── FLASH ────────────────────────────────────────────────
+function showFlash(icon) {
+  flashInner.textContent = icon;
+  flash.classList.add('show');
+  setTimeout(() => flash.classList.remove('show'), 500);
+}
+
+function showLevelFlash() {
+  levelFlashTxt.textContent = `⚡ Level ${level} — Faster!`;
+  levelFlash.classList.remove('show');
+  void levelFlash.offsetWidth; // reflow
+  levelFlash.classList.add('show');
+}
+
+// ─── GAME OVER ────────────────────────────────────────────
+function gameOver() {
+  clearTimer();
+  hide(gameScreen);
+  show(gameoverScreen);
+
+  finalScore.textContent = score;
+  if (score > bestScore) {
+    bestScore = score;
+    localStorage.setItem('jakesBest', bestScore);
+  }
+  bestScoreEl.textContent = 'Best: ' + bestScore;
+
+  if (score >= 20) {
+    goEmoji.textContent = '🏆';
+    goTitle.textContent = 'Jake Is Impressed';
+    goSub.textContent = 'He may buy you a Whopper. No promises.';
+  } else if (score >= 10) {
+    goEmoji.textContent = '😅';
+    goTitle.textContent = 'Decent Effort';
+    goSub.textContent = "Jake's seen worse. He's BEEN worse.";
+  } else {
+    goEmoji.textContent = '💔';
+    goTitle.textContent = 'Jake Is Disappointed';
+    goSub.textContent = 'He may have to consider the gym now. This is your fault.';
+  }
+  goQuote.textContent = GO_QUOTES[Math.floor(Math.random() * GO_QUOTES.length)];
+}
+
+// ─── SWIPE INPUT (touch + mouse) ──────────────────────────
+function getClientX(e) {
+  return e.touches ? e.touches[0].clientX : e.clientX;
+}
+
+swipeCard.addEventListener('touchstart', onDragStart, { passive: true });
+swipeCard.addEventListener('mousedown', onDragStart);
+
+function onDragStart(e) {
+  if (answered) return;
+  isDragging = true;
+  startX = getClientX(e);
+  swipeCard.style.transition = 'none';
+}
+
+window.addEventListener('touchmove', onDragMove, { passive: true });
+window.addEventListener('mousemove', onDragMove);
+
+function onDragMove(e) {
+  if (!isDragging || answered) return;
+  currentX = getClientX(e) - startX;
+  const rotate = currentX * 0.06;
+  swipeCard.style.transform = `translateX(${currentX}px) rotate(${rotate}deg)`;
+
+  // Indicators
+  const threshold = 40;
+  indicatorR.style.opacity = currentX > threshold ? Math.min((currentX - threshold) / 80, 1) : '0';
+  indicatorL.style.opacity = currentX < -threshold ? Math.min((-currentX - threshold) / 80, 1) : '0';
+}
+
+window.addEventListener('touchend', onDragEnd);
+window.addEventListener('mouseup', onDragEnd);
+
+function onDragEnd() {
+  if (!isDragging || answered) return;
+  isDragging = false;
+
+  const threshold = 90;
+  if (currentX > threshold) {
+    flingCard('right');
+  } else if (currentX < -threshold) {
+    flingCard('left');
+  } else {
+    // Snap back
+    swipeCard.style.transition = 'transform 0.35s cubic-bezier(0.34,1.56,0.64,1)';
+    swipeCard.style.transform  = 'translateX(0) rotate(0deg)';
+    indicatorR.style.opacity = '0';
+    indicatorL.style.opacity = '0';
+  }
+  currentX = 0;
+}
+
+function flingCard(dir) {
+  const x = dir === 'right' ? 600 : -600;
+  swipeCard.style.transition = 'transform 0.35s ease, opacity 0.35s ease';
+  swipeCard.style.transform  = `translateX(${x}px) rotate(${dir === 'right' ? 25 : -25}deg)`;
+  swipeCard.style.opacity    = '0';
+  indicatorR.style.opacity = '0';
+  indicatorL.style.opacity = '0';
+  answer(dir === 'right');
+}
+
+// ─── KEYBOARD (desktop) ──────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (!gameScreen.classList.contains('hidden') && !answered) {
+    if (e.key === 'ArrowRight') flingCard('right');
+    if (e.key === 'ArrowLeft')  flingCard('left');
+  }
+});
+
+// ─── BUTTON EVENTS ───────────────────────────────────────
+startBtn.addEventListener('click', startGame);
+retryBtn.addEventListener('click', startGame);
+</script>
+</body>
+</html>
