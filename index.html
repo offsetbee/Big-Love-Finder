@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BigLoveFinder™ — Where Big Love Meets Big Energy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=Lobster&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #e8437a;
+    --hot: #ff2d6b;
+    --purple: #7c3aed;
+    --lavender: #ede9fe;
+    --gold: #f59e0b;
+    --dark: #1a0a2e;
+    --soft: #fdf2f8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--soft); color: var(--dark); overflow-x: hidden; }
+
+  /* NAV */
+  nav {
+    background: white; border-bottom: 3px solid var(--pink);
+    padding: 0 1.5rem; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0;
+    z-index: 100; box-shadow: 0 2px 20px rgba(232,67,122,0.15); height: 60px;
+  }
+  .nav-logo { font-family: 'Lobster', cursive; font-size: 1.7rem; background: linear-gradient(135deg, var(--pink), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .nav-links { display: flex; gap: 1.2rem; align-items: center; }
+  .nav-links a { text-decoration: none; color: var(--dark); font-weight: 500; font-size: 0.9rem; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--pink); }
+  .btn-nav { background: linear-gradient(135deg, var(--pink), var(--hot)); color: white !important; padding: 0.5rem 1.2rem; border-radius: 50px; font-weight: 600 !important; box-shadow: 0 4px 15px rgba(232,67,122,0.35); white-space: nowrap; }
+
+  /* HERO */
+  .hero { background: linear-gradient(160deg, #fff0f5, #f3e8ff 50%, #fff0f5); padding: 4rem 1.5rem 3rem; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: '💕'; position: absolute; font-size: 8rem; top: -2rem; left: -1rem; opacity: 0.07; animation: float 6s ease-in-out infinite; }
+  .hero::after { content: '💕'; position: absolute; font-size: 6rem; bottom: -1rem; right: 2rem; opacity: 0.07; animation: float 8s ease-in-out infinite reverse; }
+  @keyframes float { 0%,100% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-20px) rotate(5deg); } }
+  .hero-badge { display: inline-block; background: linear-gradient(135deg, var(--gold), #f97316); color: white; font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 0.35rem 1rem; border-radius: 50px; margin-bottom: 1.2rem; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); } 50% { box-shadow: 0 0 0 10px rgba(245,158,11,0); } }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.6rem, 9vw, 5.5rem); font-weight: 900; line-height: 1.05; margin-bottom: 1.2rem; }
+  .hero h1 .line1 { display: block; color: var(--dark); }
+  .hero h1 .line2 { display: block; background: linear-gradient(135deg, var(--pink), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-style: italic; }
+  .hero-sub { font-size: 1.05rem; color: #6b4f70; max-width: 500px; margin: 0 auto 2rem; line-height: 1.6; }
+  .hero-cta-group { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
+  .btn-primary { background: linear-gradient(135deg, var(--pink), var(--hot)); color: white; padding: 0.9rem 2rem; border-radius: 50px; font-size: 1rem; font-weight: 700; border: none; cursor: pointer; text-decoration: none; display: inline-block; box-shadow: 0 8px 30px rgba(232,67,122,0.4); transition: transform 0.2s, box-shadow 0.2s; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(232,67,122,0.55); }
+  .btn-secondary { background: white; color: var(--pink); padding: 0.9rem 2rem; border-radius: 50px; font-size: 1rem; font-weight: 600; border: 2px solid var(--pink); cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.2s; }
+  .btn-secondary:hover { background: var(--pink); color: white; }
+
+  /* STATS */
+  .stats-bar { background: linear-gradient(135deg, var(--purple), #5b21b6); color: white; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; padding: 1.5rem 1rem; }
+  .stat-item { padding: 0.4rem; border-right: 1px solid rgba(255,255,255,0.2); }
+  .stat-item:last-child { border-right: none; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 5vw, 2.5rem); font-weight: 900; display: block; line-height: 1; }
+  .stat-label { font-size: clamp(0.6rem, 2vw, 0.75rem); opacity: 0.8; margin-top: 0.3rem; }
+
+  /* SHARED */
+  .section-tag { display: inline-block; background: var(--lavender); color: var(--purple); font-size: 0.72rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; padding: 0.35rem 1rem; border-radius: 50px; margin-bottom: 1rem; }
+  .section-center { text-align: center; }
+  .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* JAKE SPOKESPERSON */
+  .jake-section { padding: 4rem 1.5rem; background: linear-gradient(160deg, #fff0f5, white); }
+  .jake-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+  .jake-img-wrap { position: relative; }
+  .jake-main-img { width: 100%; border-radius: 24px; display: block; box-shadow: 0 20px 60px rgba(124,58,237,0.2); }
+  .jake-badge-img { position: absolute; bottom: -16px; right: -14px; width: 76px; height: 76px; border-radius: 50%; border: 4px solid white; object-fit: cover; box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
+  .jake-verified { position: absolute; top: 14px; left: 14px; background: var(--gold); color: white; font-size: 0.68rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 0.35rem 0.8rem; border-radius: 50px; }
+  .jake-text h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; line-height: 1.1; margin-bottom: 0.8rem; }
+  .jake-text h2 span { background: linear-gradient(135deg, var(--pink), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-style: italic; }
+  .jake-text p { color: #5a4060; line-height: 1.7; margin-bottom: 0.9rem; font-size: 1rem; }
+  .jake-quote { background: linear-gradient(135deg, #fff0f5, #f3e8ff); border-left: 4px solid var(--pink); padding: 1rem 1.3rem; border-radius: 0 14px 14px 0; margin: 1.2rem 0; font-style: italic; font-size: 1rem; color: var(--dark); font-weight: 500; }
+  .jake-stars { color: var(--gold); font-size: 1.3rem; margin-bottom: 0.3rem; }
+  .jake-stars-label { font-size: 0.82rem; color: #888; }
+
+  /* HOW IT WORKS */
+  .how-section { background: linear-gradient(160deg, #f3e8ff, #fff0f5); padding: 4rem 1.5rem; text-align: center; }
+  .how-section h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 900; margin-bottom: 0.6rem; }
+  .how-section > p { color: #6b4f70; margin-bottom: 2.5rem; }
+  .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 900px; margin: 0 auto; }
+  .step-card { background: white; border-radius: 20px; padding: 2rem 1.5rem; box-shadow: 0 8px 30px rgba(124,58,237,0.1); transition: transform 0.3s; position: relative; overflow: hidden; text-align: left; }
+  .step-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--pink), var(--purple)); }
+  .step-card:hover { transform: translateY(-6px); }
+  .step-icon { font-size: 2.5rem; margin-bottom: 0.8rem; display: block; }
+  .step-num { position: absolute; top: 1rem; right: 1.2rem; font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 900; color: var(--lavender); line-height: 1; }
+  .step-card h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 0.6rem; }
+  .step-card p { color: #6b4f70; line-height: 1.6; font-size: 0.9rem; }
+
+  /* PROFILE CARD */
+  .profile-section { background: linear-gradient(160deg, var(--dark), #2d1057); padding: 4rem 1.5rem; text-align: center; color: white; position: relative; overflow: hidden; }
+  .profile-section::before { content: '❤️'; position: absolute; font-size: 14rem; opacity: 0.04; top: -3rem; right: -3rem; animation: float 10s ease-in-out infinite; }
+  .profile-section h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 5vw, 2.5rem); font-weight: 900; margin-bottom: 0.5rem; }
+  .profile-section > p { opacity: 0.7; margin-bottom: 2.5rem; font-size: 0.95rem; }
+  .profile-card-big { background: white; color: var(--dark); border-radius: 24px; max-width: 380px; margin: 0 auto; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.4); }
+  .profile-card-big img { width: 100%; height: 300px; object-fit: cover; object-position: top; display: block; }
+  .profile-card-info { padding: 1.3rem; }
+  .profile-name-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem; }
+  .profile-name { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900; }
+  .profile-location { color: #9b6fa0; font-size: 0.85rem; margin-bottom: 0.8rem; }
+  .profile-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.8rem; }
+  .tag { background: var(--lavender); color: var(--purple); font-size: 0.72rem; font-weight: 600; padding: 0.25rem 0.7rem; border-radius: 50px; }
+  .tag.hot { background: #fce7f3; color: var(--pink); }
+  .profile-bio { font-size: 0.88rem; color: #5a4060; line-height: 1.6; border-top: 1px solid #f0d6e8; padding-top: 0.8rem; margin-bottom: 1rem; font-style: italic; }
+  .profile-btn { width: 100%; background: linear-gradient(135deg, var(--pink), var(--hot)); color: white; border: none; padding: 0.9rem; border-radius: 50px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.2s; box-shadow: 0 6px 20px rgba(232,67,122,0.35); }
+  .profile-btn:hover { transform: scale(1.03); }
+
+  /* TESTIMONIALS */
+  .testimonials { background: white; padding: 4rem 1.5rem; }
+  .testimonials-inner { max-width: 1100px; margin: 0 auto; }
+  .testimonials h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 900; text-align: center; margin-bottom: 0.6rem; }
+  .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+  .review-card { background: linear-gradient(160deg, #fff0f5, #fdf4ff); border: 1px solid #f0d6e8; border-radius: 18px; padding: 1.5rem; transition: transform 0.2s; }
+  .review-card:hover { transform: translateY(-4px); }
+  .review-header { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.8rem; }
+  .reviewer-avatar { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; border: 3px solid var(--pink); flex-shrink: 0; }
+  .reviewer-avatar-placeholder { width: 46px; height: 46px; border-radius: 50%; border: 3px solid var(--pink); background: linear-gradient(135deg, var(--pink), var(--purple)); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; font-weight: 900; flex-shrink: 0; }
+  .reviewer-info h4 { font-weight: 700; font-size: 0.95rem; }
+  .reviewer-info span { font-size: 0.75rem; color: #9b6fa0; }
+  .review-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 0.6rem; }
+  .review-text { color: #5a4060; line-height: 1.6; font-size: 0.88rem; font-style: italic; }
+
+  /* GALLERY */
+  .gallery-section { background: var(--soft); padding: 4rem 1.5rem; text-align: center; }
+  .gallery-section h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 900; margin-bottom: 0.4rem; }
+  .gallery-section > p { color: #6b4f70; margin-bottom: 2rem; }
+  .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 860px; margin: 0 auto; }
+  .gallery-item { display: flex; flex-direction: column; align-items: center; }
+  .gallery-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; object-position: top; border-radius: 16px; box-shadow: 0 8px 30px rgba(124,58,237,0.12); transition: transform 0.3s; display: block; }
+  .gallery-img:hover { transform: scale(1.04); }
+  .gallery-caption { font-size: 0.75rem; color: #9b6fa0; margin-top: 0.5rem; font-style: italic; }
+
+  /* FEATURES */
+  .features { background: white; padding: 4rem 1.5rem; }
+  .features-inner { max-width: 1100px; margin: 0 auto; }
+  .features h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 2.5rem); font-weight: 900; text-align: center; margin-bottom: 0.4rem; }
+  .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
+  .feature-item { background: var(--soft); border-radius: 18px; padding: 1.5rem; display: flex; gap: 1rem; align-items: flex-start; border: 1px solid #f0d6e8; transition: transform 0.2s; }
+  .feature-item:hover { transform: translateY(-3px); }
+  .feature-icon-wrap { width: 46px; height: 46px; border-radius: 12px; background: linear-gradient(135deg, var(--pink), var(--purple)); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+  .feature-item h3 { font-weight: 700; margin-bottom: 0.3rem; font-size: 1rem; }
+  .feature-item p { color: #6b4f70; font-size: 0.88rem; line-height: 1.6; }
+
+  /* PRICING */
+  .pricing { background: linear-gradient(160deg, #f3e8ff, #fff0f5); padding: 4rem 1.5rem; text-align: center; }
+  .pricing h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 900; margin-bottom: 0.5rem; }
+  .pricing > p { color: #6b4f70; margin-bottom: 2.5rem; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 900px; margin: 0 auto; }
+  .price-card { background: white; border-radius: 22px; padding: 2rem 1.5rem; border: 2px solid #f0d6e8; position: relative; transition: transform 0.3s; }
+  .price-card:hover { transform: translateY(-5px); }
+  .price-card.featured { background: linear-gradient(160deg, var(--dark), #2d1057); color: white; border-color: transparent; box-shadow: 0 20px 60px rgba(124,58,237,0.35); transform: scale(1.03); }
+  .price-card.featured:hover { transform: scale(1.03) translateY(-5px); }
+  .popular-badge { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, var(--gold), #f97316); color: white; font-size: 0.68rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 0.3rem 1rem; border-radius: 50px; white-space: nowrap; }
+  .plan-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .plan-tagline { font-size: 0.82rem; opacity: 0.6; margin-bottom: 1.2rem; }
+  .plan-price { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 900; line-height: 1; margin-bottom: 0.2rem; }
+  .plan-price span { font-size: 1.1rem; vertical-align: top; margin-top: 0.4rem; display: inline-block; }
+  .plan-period { font-size: 0.8rem; opacity: 0.55; margin-bottom: 1.5rem; }
+  .plan-features { list-style: none; text-align: left; margin-bottom: 1.5rem; }
+  .plan-features li { padding: 0.4rem 0; font-size: 0.88rem; display: flex; align-items: flex-start; gap: 0.5rem; }
+  .plan-features li::before { content: '✓'; color: var(--pink); font-weight: 800; flex-shrink: 0; }
+  .price-card.featured .plan-features li::before { color: var(--gold); }
+  .plan-btn { width: 100%; padding: 0.85rem; border-radius: 50px; font-weight: 700; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s; }
+  .plan-btn-outline { background: transparent; border: 2px solid var(--pink); color: var(--pink); }
+  .plan-btn-outline:hover { background: var(--pink); color: white; }
+  .plan-btn-solid { background: linear-gradient(135deg, var(--pink), var(--hot)); color: white; box-shadow: 0 6px 20px rgba(232,67,122,0.4); }
+
+  /* BURGER KING */
+  .bk-section { background: linear-gradient(160deg, #1a0a0a, #3b0d0d); padding: 4rem 1.5rem; color: white; text-align: center; position: relative; overflow: hidden; }
+  .bk-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #d62300, #f5a623, #d62300); }
+  .bk-section h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 6vw, 3.5rem); font-weight: 900; line-height: 1.1; margin-bottom: 0.8rem; }
+  .bk-date-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 820px; margin: 0 auto 2.5rem; }
+  .bk-card { background: white; border-radius: 22px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5); text-align: left; color: var(--dark); }
+  .bk-card img { width: 100%; aspect-ratio: 3/4; object-fit: cover; object-position: top; display: block; }
+  .bk-card-info { padding: 1.2rem; }
+  .bk-card-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.4rem; }
+  .bk-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 900; }
+  .bk-date-badge { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: 0.25rem 0.55rem; font-size: 0.72rem; font-weight: 700; color: #c2410c; white-space: nowrap; }
+  .bk-location { font-size: 0.78rem; color: #9b6fa0; margin-bottom: 0.7rem; }
+  .bk-quote { font-size: 0.85rem; color: #5a4060; line-height: 1.6; font-style: italic; border-top: 1px solid #f0d6e8; padding-top: 0.7rem; margin-bottom: 0.6rem; }
+  .bk-stars { color: var(--gold); font-size: 0.9rem; }
+  .bk-tip-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(245,166,35,0.3); border-radius: 22px; max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem; text-align: left; }
+  .bk-tip-box h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 900; margin-bottom: 1.2rem; text-align: center; }
+  .bk-tip-list { display: grid; gap: 0.9rem; }
+  .bk-tip-item { display: flex; gap: 0.8rem; align-items: flex-start; font-size: 0.9rem; }
+  .bk-tip-item strong { color: #f5a623; }
+  .bk-tip-item span { opacity: 0.8; }
+  .bk-footnote { margin-top: 1.5rem; padding-top: 1.2rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; opacity: 0.45; text-align: center; }
+
+  /* FOUNDER */
+  .founder-section { background: white; padding: 4rem 1.5rem; }
+  .founder-inner { max-width: 1100px; margin: 0 auto; }
+  .founder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: center; margin-bottom: 3rem; }
+  .founder-img-wrap { position: relative; }
+  .founder-accent { position: absolute; top: -12px; left: -12px; right: 12px; bottom: 12px; background: linear-gradient(135deg, var(--purple), #5b21b6); border-radius: 28px; z-index: 0; }
+  .founder-img { width: 100%; border-radius: 22px; display: block; position: relative; z-index: 1; box-shadow: 0 20px 60px rgba(124,58,237,0.25); object-fit: cover; object-position: center top; aspect-ratio: 4/3; }
+  .founder-badge { position: absolute; bottom: -14px; right: -6px; z-index: 2; background: white; border-radius: 14px; padding: 0.7rem 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 0.5rem; }
+  .founder-badge-label div:first-child { font-weight: 800; font-size: 0.82rem; color: var(--dark); }
+  .founder-badge-label div:last-child { font-size: 0.7rem; color: #9b6fa0; }
+  .founder-text h3 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.2rem); font-weight: 900; line-height: 1.1; margin-bottom: 0.3rem; }
+  .founder-role { color: var(--purple); font-weight: 600; font-size: 0.9rem; margin-bottom: 1.3rem; }
+  .founder-text p { color: #5a4060; line-height: 1.7; margin-bottom: 0.9rem; font-size: 0.98rem; }
+  .founder-quote { background: linear-gradient(135deg, #f3e8ff, #ede9fe); border-left: 4px solid var(--purple); padding: 1rem 1.3rem; border-radius: 0 14px 14px 0; margin-bottom: 1.3rem; font-style: italic; font-size: 1rem; color: var(--dark); font-weight: 500; }
+  .founder-stats { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+  .founder-stat { border-radius: 12px; padding: 0.7rem 1rem; text-align: center; flex: 1; min-width: 80px; }
+  .founder-stat-num { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; display: block; }
+  .founder-stat-label { font-size: 0.68rem; color: #6b4f70; margin-top: 0.1rem; line-height: 1.3; }
+  .origin-box { background: linear-gradient(160deg, #1a0a2e, #2d1057); border-radius: 24px; padding: 2.5rem; color: white; display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: center; margin-bottom: 1.5rem; }
+  .origin-icon { font-size: 4rem; line-height: 1; flex-shrink: 0; }
+  .origin-box h4 { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 900; margin-bottom: 0.7rem; }
+  .origin-box p { opacity: 0.75; line-height: 1.7; font-size: 0.92rem; margin-bottom: 0.6rem; }
+  .origin-pill { display: inline-block; background: rgba(245,166,35,0.2); border: 1px solid rgba(245,166,35,0.4); color: #f5a623; font-size: 0.75rem; font-weight: 700; padding: 0.35rem 0.9rem; border-radius: 50px; margin-top: 0.3rem; }
+  .quotes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .quote-card { border-radius: 18px; padding: 1.5rem; }
+  .quote-card-emoji { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .quote-card h4 { font-weight: 800; margin-bottom: 0.4rem; font-size: 1rem; }
+  .quote-card p { font-size: 0.88rem; line-height: 1.6; font-style: italic; }
+
+  /* FOOTER */
+  footer { background: var(--dark); color: white; padding: 2.5rem 1.5rem 1.5rem; text-align: center; }
+  .footer-logo { font-family: 'Lobster', cursive; font-size: 2rem; background: linear-gradient(135deg, var(--pink), #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.4rem; }
+  .footer-tagline { color: rgba(255,255,255,0.45); font-size: 0.85rem; margin-bottom: 1.5rem; }
+  .footer-links { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .footer-links a { color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--pink); }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.2rem; font-size: 0.78rem; color: rgba(255,255,255,0.3); }
+  .footer-bottom strong { color: var(--pink); }
+
+  /* ═══════════════════════════
+     TABLET — 768px
+  ═══════════════════════════ */
+  @media (max-width: 768px) {
+    .hide-mobile { display: none; }
+    nav { padding: 0 1rem; height: 56px; }
+    .nav-logo { font-size: 1.4rem; }
+
+    .hero { padding: 3rem 1.2rem 2.5rem; }
+
+    .jake-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .jake-badge-img { width: 60px; height: 60px; right: 8px; }
+
+    .steps-grid { grid-template-columns: 1fr; gap: 1rem; }
+
+    .reviews-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* Gallery: 2 cols on tablet */
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; max-width: 480px; }
+
+    .features-grid { grid-template-columns: 1fr; }
+
+    .pricing-grid { grid-template-columns: 1fr; max-width: 360px; margin-left: auto; margin-right: auto; }
+    .price-card.featured { transform: scale(1); }
+    .price-card.featured:hover { transform: translateY(-5px); }
+
+    .bk-date-grid { grid-template-columns: 1fr; max-width: 360px; margin-left: auto; margin-right: auto; }
+
+    .founder-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .founder-accent { display: none; }
+    .founder-img { aspect-ratio: 16/9; }
+    .founder-badge { right: 0; }
+    .origin-box { grid-template-columns: 1fr; text-align: center; padding: 1.8rem 1.3rem; }
+    .origin-icon { font-size: 3rem; }
+    .quotes-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ═══════════════════════════
+     SMALL PHONE — 480px
+  ═══════════════════════════ */
+  @media (max-width: 480px) {
+    .jake-section, .how-section, .testimonials, .profile-section,
+    .gallery-section, .features, .pricing, .bk-section, .founder-section { padding: 3rem 1rem; }
+
+    .hero { padding: 2.5rem 1rem 2rem; }
+    .hero-badge { font-size: 0.62rem; }
+    .hero-sub { font-size: 0.95rem; }
+    .btn-primary, .btn-secondary { padding: 0.8rem 1.5rem; font-size: 0.95rem; }
+
+    .stat-label { font-size: 0.58rem; }
+
+    .reviews-grid { grid-template-columns: 1fr; }
+
+    /* Gallery stays 2 cols even on small phones */
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; max-width: 100%; }
+
+    .pricing-grid { max-width: 100%; }
+    .bk-date-grid { max-width: 100%; }
+    .bk-tip-box { padding: 1.3rem 1rem; }
+
+    .founder-stats { gap: 0.5rem; }
+    .founder-stat { min-width: 70px; padding: 0.6rem 0.7rem; }
+    .founder-stat-num { font-size: 1.3rem; }
+
+    .footer-links { gap: 0.6rem; }
+    .footer-links a { font-size: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">BigLoveFinder™</div>
+  <div class="nav-links">
+    <a href="#how" class="hide-mobile">How It Works</a>
+    <a href="#reviews" class="hide-mobile">Reviews</a>
+    <a href="#pricing" class="hide-mobile">Pricing</a>
+    <a href="#join" class="btn-nav">Join Free</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">⭐ #1 Rated Plus-Size Romance App in Canada</div>
+  <h1>
+    <span class="line1">Big Bodies.</span>
+    <span class="line2">Bigger Love.</span>
+  </h1>
+  <p class="hero-sub">The only dating app where your love handles are your best feature. Real women. Real connections. Real snacks.</p>
+  <div class="hero-cta-group">
+    <a href="#join" class="btn-primary" id="join">Find My Match 💕</a>
+    <a href="#how" class="btn-secondary">See How It Works</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item"><span class="stat-num">847K+</span><div class="stat-label">Women Who Love a Big Guy</div></div>
+  <div class="stat-item"><span class="stat-num">94%</span><div class="stat-label">Success Rate (per Jake)</div></div>
+  <div class="stat-item"><span class="stat-num">12K+</span><div class="stat-label">Happy Couples</div></div>
+</div>
+
+<!-- JAKE SPOKESPERSON -->
+<section class="jake-section">
+  <div class="jake-inner">
+    <div class="jake-img-wrap fade-in">
+      <span class="jake-verified">⭐ Official Spokesperson</span>
+      <img src="jake-solo-waterbottle.png" alt="Jake Caputo" class="jake-main-img">
+      <img src="jake-thumbs-up.png" alt="Jake" class="jake-badge-img">
+    </div>
+    <div class="jake-text fade-in" style="transition-delay:0.15s">
+      <div class="section-tag">🏆 Meet Our #1 Advocate</div>
+      <h2>Jake Caputo<br>Changed <span>Everything</span></h2>
+      <p>When Jake first heard about BigLoveFinder™, he was a single, water-bottle-holding man with a mullet, a denim jacket, and a dream. Now? He's living proof that love doesn't discriminate — it just knows what it likes.</p>
+      <p>Since joining in May 2023, Jake has become our most successful member <em>and</em> our most enthusiastic spokesperson. He asked us to let him talk about the site. Honestly, we couldn't say no.</p>
+      <div class="jake-quote">
+        "I was skeptical at first. I'm not gonna lie. But now? Found my perfect match. BigLoveFinder just gets it, man. It just gets it."
+        <br><br>— <strong>Jake Caputo</strong>, St. Catharines, ON 🍁
+      </div>
+      <div class="jake-stars">★★★★★</div>
+      <div class="jake-stars-label">5 stars · Verified Member · Joined May 23, 2023</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="section-tag" style="background:white;color:var(--purple);">Simple & Effective</div>
+  <h2>How BigLoveFinder™ Works</h2>
+  <p>Three easy steps to finding the woman of your dreams. Jake did it. You can too.</p>
+  <div class="steps-grid">
+    <div class="step-card fade-in">
+      <span class="step-num">1</span><span class="step-icon">👤</span>
+      <h3>Build Your Profile</h3>
+      <p>Upload your best pics. Lead with confidence. Mention your hobbies (eating counts). Jake used four poses. It worked.</p>
+    </div>
+    <div class="step-card fade-in" style="transition-delay:0.12s">
+      <span class="step-num">2</span><span class="step-icon">💘</span>
+      <h3>Our Algorithm Does Its Thing</h3>
+      <p>Our proprietary BigMatch™ AI analyzes personality, energy, and snack compatibility. Science, basically.</p>
+    </div>
+    <div class="step-card fade-in" style="transition-delay:0.24s">
+      <span class="step-num">3</span><span class="step-icon">💍</span>
+      <h3>Meet Your Perfect Match</h3>
+      <p>Chat, connect, fall in love. Like Jake did. He's very happy about it and tells everyone. We mean everyone.</p>
+    </div>
+  </div>
+</section>
+
+<!-- JAKE PROFILE CARD -->
+<section class="profile-section">
+  <div class="section-tag" style="background:rgba(255,255,255,0.15);color:white;">👀 Featured Profile</div>
+  <h2>The Man. The Myth. The Mullet.</h2>
+  <p>This is Jake's actual profile. He insisted we feature it.</p>
+  <div class="profile-card-big fade-in">
+    <img src="jake-couple-outdoor.png" alt="Jake Caputo on BigLoveFinder">
+    <div class="profile-card-info">
+      <div class="profile-name-row">
+        <span class="profile-name">Jake Caputo</span>
+        <span style="font-size:0.85rem;color:#aaa;">✓ Verified</span>
+      </div>
+      <div class="profile-location">📍 St. Catharines, ON · Looking for Love (Found It)</div>
+      <div class="profile-tags">
+        <span class="tag hot">🔥 Top Pick</span>
+        <span class="tag">Mullet Enthusiast</span>
+        <span class="tag">Snack Connoisseur</span>
+        <span class="tag">Big Heart</span>
+        <span class="tag">Denim Fan</span>
+      </div>
+      <div class="profile-bio">"Big guy, bigger heart, biggest appetite. Swipe right before I eat your leftovers. I'm the snack AND the meal. Bring a fork and good conversation."</div>
+      <button class="profile-btn">💕 Send Jake a Heart</button>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="reviews">
+  <div class="testimonials-inner">
+    <div class="section-tag" style="display:block;width:fit-content;margin:0 auto 1rem;">Real Stories</div>
+    <h2 style="text-align:center;margin-bottom:0.6rem;">They Found Their Big Love</h2>
+    <p style="text-align:center;color:#6b4f70;margin-bottom:2.5rem;">Actual reviews from actual members. Jake contributed two of them, unprompted.</p>
+    <div class="reviews-grid">
+      <div class="review-card fade-in">
+        <div class="review-header">
+          <img src="jake-thumbs-up.png" alt="Jake" class="reviewer-avatar">
+          <div class="reviewer-info"><h4>Jake Caputo</h4><span>St. Catharines · May 2023</span></div>
+        </div>
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"I was skeptical at first, but I've found my perfect match! Also I am available for paid appearances and weddings."</p>
+      </div>
+      <div class="review-card fade-in" style="transition-delay:0.08s">
+        <div class="review-header">
+          <div class="reviewer-avatar-placeholder">S</div>
+          <div class="reviewer-info"><h4>Sandra K.</h4><span>Hamilton, ON · March 2024</span></div>
+        </div>
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"BigLoveFinder matched me within a week. He brought a 2-litre of Pepsi on our first date. Romantic."</p>
+      </div>
+      <div class="review-card fade-in" style="transition-delay:0.16s">
+        <div class="review-header">
+          <div class="reviewer-avatar-placeholder">D</div>
+          <div class="reviewer-info"><h4>Derek M.</h4><span>Barrie, ON · August 2024</span></div>
+        </div>
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"My buddy Jake wouldn't stop talking about this app so I finally signed up. He was right. God I hate admitting that."</p>
+      </div>
+      <div class="review-card fade-in">
+        <div class="review-header">
+          <div class="reviewer-avatar-placeholder">M</div>
+          <div class="reviewer-info"><h4>Michelle T.</h4><span>Brantford, ON · Jan 2025</span></div>
+        </div>
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"I saw Jake's testimonial and thought — that guy seems trustworthy. Downloaded the app. Met someone great. Jake was right about everything."</p>
+      </div>
+      <div class="review-card fade-in" style="transition-delay:0.08s">
+        <div class="review-header">
+          <img src="jake-thumbs-up.png" alt="Jake" class="reviewer-avatar">
+          <div class="reviewer-info"><h4>Jake Caputo</h4><span>Still St. Catharines · Feb 2025</span></div>
+        </div>
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Wanted to leave a second review because five stars didn't feel like enough. I have a girlfriend now. She is great. This app is great. I am great."</p>
+      </div>
+      <div class="review-card fade-in" style="transition-delay:0.16s">
+        <div class="review-header">
+          <div class="reviewer-avatar-placeholder">B</div>
+          <div class="reviewer-info"><h4>Brenda F.</h4><span>Welland, ON · April 2025</span></div>
+        </div>
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"My therapist told me to try online dating. Did not specify which app. I chose BigLoveFinder. Best decision I ever made without professional guidance."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JAKE GALLERY — 4 individual photos -->
+<section class="gallery-section">
+  <div class="section-tag" style="display:inline-block;">Jake's Portfolio 📸</div>
+  <h2>Jake's Four Signature Looks</h2>
+  <p>He practiced for weeks. This is commitment. This is art.</p>
+  <div class="gallery-grid">
+    <div class="gallery-item">
+      <img src="jake-waving.png" alt="Jake waving" class="gallery-img">
+      <div class="gallery-caption">"The Welcome"</div>
+    </div>
+    <div class="gallery-item">
+      <img src="jake-hands-on-hips.png" alt="Jake hands on hips" class="gallery-img">
+      <div class="gallery-caption">"The Confident Man"</div>
+    </div>
+    <div class="gallery-item">
+      <img src="jake-thumbs-up.png" alt="Jake thumbs up" class="gallery-img">
+      <div class="gallery-caption">"The Endorsement"</div>
+    </div>
+    <div class="gallery-item">
+      <img src="jake-thumbs-up-2.png" alt="Jake double thumbs up" class="gallery-img">
+      <div class="gallery-caption">"The Guarantee"</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="features-inner">
+    <div class="section-tag" style="display:block;width:fit-content;margin:0 auto 1rem;">Why BigLoveFinder™</div>
+    <h2>Built for Big Love</h2>
+    <p style="text-align:center;color:#6b4f70;margin-bottom:2.5rem;">Everything you need to find someone who appreciates the full package.</p>
+    <div class="features-grid">
+      <div class="feature-item fade-in"><div class="feature-icon-wrap">🔥</div><div><h3>BigMatch™ Algorithm</h3><p>Proprietary matching tech based on personality, vibe, and snack preferences. Jake called it "spooky accurate."</p></div></div>
+      <div class="feature-item fade-in" style="transition-delay:0.08s"><div class="feature-icon-wrap">🛡️</div><div><h3>Safe & Verified Profiles</h3><p>Every profile is verified. What you see is what you get. In Jake's case, a lot.</p></div></div>
+      <div class="feature-item fade-in" style="transition-delay:0.12s"><div class="feature-icon-wrap">💬</div><div><h3>Real-Time Messaging</h3><p>Send voice notes, photos, meal pics. It's all fair game on BigLoveFinder™.</p></div></div>
+      <div class="feature-item fade-in" style="transition-delay:0.16s"><div class="feature-icon-wrap">📍</div><div><h3>Local Matching</h3><p>Jake found someone in his area. She is wonderful. We have met her. She is very patient.</p></div></div>
+      <div class="feature-item fade-in" style="transition-delay:0.2s"><div class="feature-icon-wrap">⭐</div><div><h3>Profile Boost</h3><p>Get 10x more visibility. Jake didn't need one. He bought three anyway just to be safe.</p></div></div>
+      <div class="feature-item fade-in" style="transition-delay:0.24s"><div class="feature-icon-wrap">🎯</div><div><h3>Preference Filters</h3><p>"Must appreciate a man who gestures confidently while holding water" is a valid filter.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="section-tag" style="background:white;color:var(--purple);display:inline-block;">Simple Pricing</div>
+  <h2>Invest in Your Love Life</h2>
+  <p>Jake says the premium plan paid for itself on the first date. (She bought dinner.)</p>
+  <div class="pricing-grid">
+    <div class="price-card fade-in">
+      <div class="plan-name">Free</div>
+      <div class="plan-tagline">Get your feet wet</div>
+      <div class="plan-price"><span>$</span>0</div>
+      <div class="plan-period">forever, actually</div>
+      <ul class="plan-features">
+        <li>Create a profile</li><li>5 matches per day</li><li>Basic messaging</li><li>Jake's approved bio tips</li>
+      </ul>
+      <button class="plan-btn plan-btn-outline">Start Free</button>
+    </div>
+    <div class="price-card featured fade-in" style="transition-delay:0.1s">
+      <div class="popular-badge">🏆 Jake's Pick</div>
+      <div class="plan-name">Big Love Plus</div>
+      <div class="plan-tagline">What Jake uses</div>
+      <div class="plan-price"><span>$</span>19</div>
+      <div class="plan-period">per month · cancel anytime</div>
+      <ul class="plan-features">
+        <li>Unlimited matches</li><li>See who liked you</li><li>Profile boost included</li><li>Advanced filters</li><li>Priority support</li><li>Jake's personal blessing</li>
+      </ul>
+      <button class="plan-btn plan-btn-solid">Get Big Love Plus</button>
+    </div>
+    <div class="price-card fade-in" style="transition-delay:0.2s">
+      <div class="plan-name">Premium</div>
+      <div class="plan-tagline">The whole enchilada</div>
+      <div class="plan-price"><span>$</span>39</div>
+      <div class="plan-period">per month</div>
+      <ul class="plan-features">
+        <li>Everything in Plus</li><li>Video dates</li><li>Concierge matching</li><li>Monthly Zoom with Jake</li><li>Exclusive events access</li>
+      </ul>
+      <button class="plan-btn plan-btn-outline">Go Premium</button>
+    </div>
+  </div>
+</section>
+
+<!-- JAKE'S #1 TIP — BURGER KING -->
+<section class="bk-section">
+  <div style="display:inline-block;background:rgba(245,166,35,0.2);border:1px solid #f5a623;color:#f5a623;font-size:0.72rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:0.4rem 1.2rem;border-radius:50px;margin-bottom:1.2rem;">👑 Jake's #1 Dating Tip</div>
+  <h2>"Always Take Your Queen<br><span style="color:#f5a623;font-style:italic;">To Burger King."</span></h2>
+  <p style="opacity:0.65;font-size:0.92rem;max-width:480px;margin:0.8rem auto 2.5rem;line-height:1.6;">— Jake Caputo, relationship expert, Whopper enthusiast, and man who has done this twice with documented photographic evidence</p>
+
+  <div class="bk-date-grid">
+    <div class="bk-card">
+      <div style="position:relative;">
+        <img src="jake-brianna-bk-night.png" alt="Jake and Brianna at BK">
+        <div style="position:absolute;top:10px;left:10px;background:#d62300;color:white;font-size:0.65rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:0.28rem 0.7rem;border-radius:50px;">📸 Date Night Vol. 1</div>
+      </div>
+      <div class="bk-card-info">
+        <div class="bk-card-top"><span class="bk-name">Jake & Brianna 🍟</span><span class="bk-date-badge">2nd Date ✓</span></div>
+        <div class="bk-location">Burger King, St. Catharines · 8:47 PM</div>
+        <p class="bk-quote">"She got the fries. I got the large Coke. We split a Whopper meal deal. She said it was the most romantic dinner of her life. I believe her."</p>
+        <div class="bk-stars">★★★★★</div>
+      </div>
+    </div>
+    <div class="bk-card">
+      <div style="position:relative;">
+        <img src="jake-destiny-bk-night.png" alt="Jake and Destiny at BK">
+        <div style="position:absolute;top:10px;left:10px;background:#d62300;color:white;font-size:0.65rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:0.28rem 0.7rem;border-radius:50px;">📸 Date Night Vol. 2</div>
+      </div>
+      <div class="bk-card-info">
+        <div class="bk-card-top"><span class="bk-name">Jake & Destiny 💧</span><span class="bk-date-badge">1st Date ✓</span></div>
+        <div class="bk-location">Burger King, St. Catharines · 9:12 PM</div>
+        <p class="bk-quote">"I brought a water bottle from home to save money. She thought it was charming. She's right. I am charming. Also frugal. Both."</p>
+        <div class="bk-stars">★★★★★</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bk-tip-box">
+    <h3>🍔 Jake's Full Breakdown of Why BK Works</h3>
+    <div class="bk-tip-list">
+      <div class="bk-tip-item"><span style="font-size:1.3rem;flex-shrink:0;">👑</span><div><strong>It's called Burger KING</strong> — <span>You walk in as a king. You leave as a king. She sees this. It works.</span></div></div>
+      <div class="bk-tip-item"><span style="font-size:1.3rem;flex-shrink:0;">💸</span><div><strong>The 2 for $5 deal is romantic</strong> — <span>You're buying her dinner AND yours for five dollars. That's efficiency. That's a man with a plan.</span></div></div>
+      <div class="bk-tip-item"><span style="font-size:1.3rem;flex-shrink:0;">🍟</span><div><strong>Shared fries = intimacy</strong> — <span>When she reaches into your fry container, that's connection. That's vulnerability. That's love.</span></div></div>
+      <div class="bk-tip-item"><span style="font-size:1.3rem;flex-shrink:0;">💧</span><div><strong>BYOW (Bring Your Own Water)</strong> — <span>Save the $2.49 on fountain drinks. Put it toward dessert. Or savings. Jake does both.</span></div></div>
+      <div class="bk-tip-item"><span style="font-size:1.3rem;flex-shrink:0;">🕘</span><div><strong>Go after 9 PM</strong> — <span>Mood lighting from the parking lot lamps. The drive-thru sign glows like the moon. Very atmospheric.</span></div></div>
+    </div>
+    <div class="bk-footnote">* Jake has been to this specific Burger King 11 times. The staff know his order. He considers this a power move.</div>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section class="founder-section">
+  <div class="founder-inner">
+    <div style="text-align:center;margin-bottom:3rem;">
+      <div class="section-tag">🧠 The Origin Story</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,5vw,3rem);font-weight:900;line-height:1.1;">
+        Meet the Man Behind<br>
+        <span style="background:linear-gradient(135deg,var(--purple),#5b21b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:italic;">the Mission</span>
+      </h2>
+    </div>
+
+    <div class="founder-grid">
+      <div class="founder-img-wrap fade-in">
+        <div class="founder-accent"></div>
+        <img src="bill-and-jake-bk-inside.jpg" alt="Bill Lipsit, Founder of BigLoveFinder" class="founder-img">
+        <div class="founder-badge">
+          <span style="font-size:1.3rem;">💡</span>
+          <div class="founder-badge-label">
+            <div>The Idea Guy</div>
+            <div>Founded BigLoveFinder™ 2023</div>
+          </div>
+        </div>
+      </div>
+      <div class="founder-text fade-in" style="transition-delay:0.15s">
+        <h3>Bill Lipsit</h3>
+        <div class="founder-role">Founder &amp; CEO · BigLoveFinder™</div>
+        <p>Bill Lipsit is a big man with an even bigger vision. For years, Bill watched his best friend Jake navigate the dating world with nothing but charisma, a denim jacket, and an unsettling amount of confidence. And yet — somehow — Jake wasn't finding matches.</p>
+        <p>Bill tried everything. He wingmanned at bars. He set Jake up with coworkers. He once made a poster. None of it worked at scale. Then one day, staring at a Whopper and thinking deeply about life, it hit him: <em>there are women out there who specifically love a big guy — they just had no good way to find one.</em></p>
+        <p>BigLoveFinder™ was born. Not from market research. Not from investor decks. From one man's absolute refusal to let his friend go on a diet.</p>
+        <div class="founder-quote">
+          "Jake didn't need to change. The algorithm needed to change. So I built the algorithm."
+          <br><br>— <strong>Bill Lipsit</strong>, Founder &amp; CEO
+        </div>
+        <div class="founder-stats">
+          <div class="founder-stat" style="background:var(--lavender);"><span class="founder-stat-num" style="color:var(--purple);">1</span><div class="founder-stat-label">Friend He Had to Help</div></div>
+          <div class="founder-stat" style="background:#fce7f3;"><span class="founder-stat-num" style="color:var(--pink);">0</span><div class="founder-stat-label">Diets Jake Will Ever Go On</div></div>
+          <div class="founder-stat" style="background:#fef3c7;"><span class="founder-stat-num" style="color:#d97706;">12K+</span><div class="founder-stat-label">Couples Now Matched</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="origin-box fade-in">
+      <div class="origin-icon">💡</div>
+      <div>
+        <h4>The Exact Moment BigLoveFinder™ Was Invented</h4>
+        <p>Bill and Jake were sitting inside a Burger King. Jake was explaining — for the fourteenth time — why he didn't need to go to the gym. Bill was nodding. A woman walked by, looked at Jake, and smiled. Jake didn't notice because he was looking at the menu.</p>
+        <p>Bill watched this and thought: <em>"There has to be a better system."</em> He went home. He built BigLoveFinder™. Jake still doesn't know that woman smiled at him. Bill has decided never to tell him — it makes the founding story better.</p>
+        <div class="origin-pill">📍 This Burger King is now considered hallowed ground by Bill</div>
+      </div>
+    </div>
+
+    <div class="quotes-grid">
+      <div class="quote-card" style="background:linear-gradient(160deg,#f0fdf4,#dcfce7);border:1px solid #bbf7d0;">
+        <div class="quote-card-emoji">🤝</div>
+        <h4 style="color:#166534;">Bill on Jake</h4>
+        <p style="color:#15803d;">"Jake is my best friend and my greatest product success story. He is also the reason I skipped five gym sessions this month because he kept calling me to talk about Brianna. Worth it."</p>
+      </div>
+      <div class="quote-card" style="background:linear-gradient(160deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;">
+        <div class="quote-card-emoji">😎</div>
+        <h4 style="color:#1e40af;">Jake on Bill</h4>
+        <p style="color:#1d4ed8;">"Bill built an app for me so I wouldn't have to go on a diet. That's friendship. That's loyalty. I would go to the ends of the earth for that man. Or at least to the Burger King on Lake Street."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GAME PROMO SECTION -->
+<section style="background: linear-gradient(135deg, #0f0a1e, #1a0a2e); padding: 3.5rem 1.5rem; text-align: center; border-top: 4px solid var(--pink);">
+  <div style="max-width: 600px; margin: 0 auto;">
+    <div style="font-size: 3.5rem; margin-bottom: 0.8rem; animation: float 3s ease-in-out infinite;">🕹️</div>
+    <div style="display:inline-block; background: linear-gradient(135deg, var(--pink), var(--hot)); color: white; font-size: 0.72rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; padding: 0.35rem 1rem; border-radius: 50px; margin-bottom: 1rem;">New Game — Play Free</div>
+    <h2 style="font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 6vw, 2.8rem); font-weight: 900; color: white; line-height: 1.1; margin-bottom: 0.8rem;">
+      Jake's Swipe Right<br><span style="background: linear-gradient(135deg, var(--pink), #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-style: italic;">Survival</span>
+    </h2>
+    <p style="color: rgba(255,255,255,0.65); font-size: 1rem; line-height: 1.6; margin-bottom: 0.6rem;">
+      Help Jake survive the modern world. Swipe RIGHT on burgers &amp; fries. Swipe LEFT on vegetables and gym equipment.
+    </p>
+    <p style="color: rgba(255,255,255,0.4); font-size: 0.85rem; margin-bottom: 2rem;">Levels get faster. Two strikes and you're out. Jake is counting on you.</p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;">
+      <div style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 0.9rem 1.3rem; color: white; font-size: 0.85rem;">
+        👉 Swipe RIGHT<br><span style="opacity:0.6; font-size:0.78rem;">Burgers &amp; Fries</span>
+      </div>
+      <div style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 0.9rem 1.3rem; color: white; font-size: 0.85rem;">
+        👈 Swipe LEFT<br><span style="opacity:0.6; font-size:0.78rem;">Veggies &amp; Gym Gear</span>
+      </div>
+      <div style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 0.9rem 1.3rem; color: white; font-size: 0.85rem;">
+        ⚡ Gets Faster<br><span style="opacity:0.6; font-size:0.78rem;">Each Level</span>
+      </div>
+    </div>
+    <a href="game.html" style="display: inline-block; background: linear-gradient(135deg, var(--pink), var(--hot)); color: white; font-size: 1.1rem; font-weight: 800; padding: 1rem 3rem; border-radius: 50px; text-decoration: none; box-shadow: 0 8px 30px rgba(232,67,122,0.5); letter-spacing: 0.3px;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
+      Play Now 🎮
+    </a>
+    <div style="margin-top: 1.2rem; color: rgba(255,255,255,0.3); font-size: 0.78rem;">Free to play · No download · Works on your phone</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">BigLoveFinder™</div>
+  <div class="footer-tagline">Big Bodies. Bigger Love. Biggest Appetites.</div>
+  <div class="footer-links">
+    <a href="#">About Us</a>
+    <a href="#">Success Stories</a>
+    <a href="#">Jake Caputo Fan Page</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Contact</a>
+    <a href="#">Press (Jake handles this)</a>
+    <a href="game.html" style="color:var(--gold) !important;font-weight:700;">🎮 Play Jake's Game</a>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 BigLoveFinder™. All rights reserved. · Endorsed by <strong>Jake Caputo</strong> (unpaid, he just really wanted to) · Made with 💕 in the Niagara Region</p>
+    <p style="margin-top:0.5rem;font-size:0.7rem;opacity:0.5;">*Results may vary. Jake's results are not typical. Jake is exceptional in many ways. The mullet helps.</p>
+  </div>
+</footer>
+
+<!-- ZOOGOLF POPUP -->
+<style>
+  .zg-overlay {
+    position: fixed; inset: 0; z-index: 999;
+    background: rgba(0,0,0,0.55);
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+  .zg-overlay.show { opacity: 1; pointer-events: all; }
+  .zg-popup {
+    position: relative;
+    max-width: 360px;
+    width: 100%;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    cursor: pointer;
+    transform: scale(0.88) translateY(20px);
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .zg-overlay.show .zg-popup { transform: scale(1) translateY(0); }
+  .zg-popup img { width: 100%; display: block; }
+  .zg-close {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 32px; height: 32px;
+    background: rgba(0,0,0,0.55);
+    border: none; border-radius: 50%;
+    color: white; font-size: 1.1rem; line-height: 1;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    z-index: 10;
+    transition: background 0.2s, transform 0.2s;
+    font-weight: 700;
+  }
+  .zg-close:hover { background: rgba(0,0,0,0.8); transform: scale(1.1); }
+</style>
+
+<div class="zg-overlay" id="zgOverlay">
+  <div class="zg-popup" id="zgPopup">
+    <button class="zg-close" id="zgClose" title="Close">✕</button>
+    <img src="zoogolf-popup.jpg" alt="ZooGolf – The Best Side Game in Golf">
+  </div>
+</div>
+
+<script>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // ZooGolf popup — fires once when user hits ~50% scroll
+  let zgFired = false;
+  const zgOverlay = document.getElementById('zgOverlay');
+  const zgClose  = document.getElementById('zgClose');
+  const zgPopup  = document.getElementById('zgPopup');
+
+  window.addEventListener('scroll', function() {
+    if (zgFired) return;
+    const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    if (scrolled >= 0.48) {
+      zgFired = true;
+      zgOverlay.classList.add('show');
+    }
+  });
+
+  // Click image → go to zoo.golf
+  zgPopup.addEventListener('click', function(e) {
+    if (e.target === zgClose) return;
+    window.open('https://zoo.golf', '_blank');
+  });
+
+  // Close button
+  zgClose.addEventListener('click', function(e) {
+    e.stopPropagation();
+    zgOverlay.classList.remove('show');
+  });
+
+  // Click backdrop to close
+  zgOverlay.addEventListener('click', function(e) {
+    if (e.target === zgOverlay) zgOverlay.classList.remove('show');
+  });
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+
+  document.querySelector('.profile-btn').addEventListener('click', function() {
+    this.textContent = '💕 Jake says thank you personally';
+    this.style.background = 'linear-gradient(135deg,#f59e0b,#f97316)';
+    setTimeout(() => { this.textContent = '💕 Send Jake a Heart'; this.style.background = ''; }, 2500);
+  });
+</script>
+
+</html>
